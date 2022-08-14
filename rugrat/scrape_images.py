@@ -2,7 +2,8 @@ from bs4 import BeautifulSoup
 from bs4.element import ResultSet
 import requests
 from utils import *
-from urllib.parse import urljoin
+
+list_of_str = list[str, ...]
 
 
 def scrape_images(url: str) -> list_of_str | None:
@@ -25,8 +26,7 @@ def scrape_images(url: str) -> list_of_str | None:
 
         # return the list of the images links
         all_image_links: list_of_str = [
-            img['src'] if not is_relative_path(img['src'])
-            else urljoin(url, img['src'])
+            join_urls(url, img['src'])
             for img in all_image_tags
         ]
 
@@ -38,9 +38,14 @@ def scrape_images(url: str) -> list_of_str | None:
 
 if __name__ == '__main__':
     web_page: str = 'https://unsplash.com/'
+    # web_page: str = 'https://klyuniv.ac.in/'
     # web_page: str = 'https://docs.python.org/3/library/typing.html'
 
     # all the image links
     image_links: list_of_str = scrape_images(web_page)
 
-    print(image_links)
+    # printing all the links
+    [print(link) for link in image_links]
+
+    # save as csv file
+    save_as_csv('image.csv', image_links)

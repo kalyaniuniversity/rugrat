@@ -1,29 +1,48 @@
 """Provides some utilities used by other modules"""
 
-import re
-from re import Pattern
+from typing import AnyStr
+from urllib.parse import urljoin, urlparse
+import csv
+
 
 # ______________________________________________________________
-
-list_of_str = list[str, ...]
 
 
 def is_relative_path(link: str) -> bool:
     """
-    Checks if the current link is absolute image url or a relative image path
+    Checks if the given link is relative link or absolute link.
+    "scheme://netloc/path;parameters?query#fragment"
+    If the url has scheme and netloc then it is absolute link
+    If the url has path only, then it is relative link
 
-    :param link: image link
-    :return: True for relative path
+    :param link:
+    :return: True if the link is relative
     """
-
-    # a valid url looks like 'https://sb.scorecardresearch.com/'
-    # relative path: '../_static/py.svg'
-
-    # image link pattern
-    link_pattern: Pattern = re.compile(r"^https|http")
-
-    mo: list = link_pattern.findall(link)
-
-    return True if len(mo) == 0 else False
+    parsed_url = urlparse(link)
+    return not parsed_url.scheme and not parsed_url.netloc
 
 
+def join_urls(link1: str, link2: str) -> AnyStr:
+    """
+    Join website URL with the image URL;
+    if the image URL is absolute then it returns the same
+    if the image URL is relative then it joins it with the website URL and returns
+
+    :param link1: website URL
+    :param link2: image link relative or absolute
+    :return: absolute path of the image
+    """
+    return urljoin(link1, link2)
+
+
+def save_as_csv(filename: str, links: list[str]) -> None:
+    """
+    Save all the links in a CSV file.
+
+    :param filename: filename of the csv file
+    :param links: image links scraped from the website
+    """
+    with open(filename, 'w', newline='') as csv_file:
+        writer = csv.writer(csv_file)
+        for link in links:
+            writer.writerow([link])
