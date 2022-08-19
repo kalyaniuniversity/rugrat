@@ -49,3 +49,6 @@ if __name__ == '__main__':
 
     # save as csv file
     save_as_csv('image.csv', image_links)
+
+    # save as json file
+    save_as_json('image.json', image_links)

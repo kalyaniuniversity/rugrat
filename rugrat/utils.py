@@ -3,6 +3,7 @@
 from typing import AnyStr
 from urllib.parse import urljoin, urlparse
 import csv
+import json
 
 
 # ______________________________________________________________
@@ -46,3 +47,12 @@ def save_as_csv(filename: str, links: list[str]) -> None:
         writer = csv.writer(csv_file)
         for link in links:
             writer.writerow([link])
+
+
+def save_as_json(filename: str, links: list[str]) -> None:
+    links_dict = dict(
+        image_links=links
+    )
+
+    with open(filename, 'w') as json_file:
+        json.dump(links_dict, json_file)
